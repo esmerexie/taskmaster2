@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EC7878"
+    tools:context=".activites.TaskDetailPageActivity">
+
+    <TextView
+        android:id="@+id/taskDetailTextView"
+        android:layout_width="77dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="52dp"
+        android:text="Task Detail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/TaskDetailTextViewParagraph"
+        android:layout_width="386dp"
+        android:layout_height="86dp"
+        android:layout_marginTop="64dp"
+        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi scelerisque felis et semper feugiat. Donec ut pretium tortor. Nunc consequat, nisl vitae convallis egestas, augue augue porta felis, a placerat nisl orci a turpis. Etiam et nulla ut neque consequat consequat. Proin eu leo mi. Quisque lobortis ornare sagittis. Phasellus laoreet mauris id ipsum blandit maximus."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/taskDetailTextView" />
+</androidx.constraintlayout.widget.ConstraintLayout>
