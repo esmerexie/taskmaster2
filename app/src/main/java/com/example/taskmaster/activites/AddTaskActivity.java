@@ -1,12 +1,11 @@
 package com.example.taskmaster.activites;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
+
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,28 +13,17 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.taskmaster.R;
-import com.example.taskmaster.database.TaskDatabase;
 import com.example.taskmaster.model.Task;
 
 import java.util.Date;
 
 public class AddTaskActivity extends AppCompatActivity {
     public static final String DATABASE_NAME = "task_db";
-    TaskDatabase taskDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
-
-        taskDatabase = Room.databaseBuilder(
-                        getApplicationContext(),
-                        TaskDatabase.class,
-                        DATABASE_NAME
-                )
-                .allowMainThreadQueries()
-                .fallbackToDestructiveMigration()
-                .build();
 
 
         setUpTypeSpinner();
@@ -72,7 +60,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
             Task newTask = new Task(taskName, taskBody, taskState, taskTypeEnum, newDate);
 
-            taskDatabase.taskDao().insertTask(newTask);
+//            taskDatabase.taskDao().insertTask(newTask);
 
             Intent goToMainActivity = new Intent(AddTaskActivity.this, MainActivity.class);
             startActivity(goToMainActivity);
