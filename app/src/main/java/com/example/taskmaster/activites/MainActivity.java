@@ -3,7 +3,7 @@ package com.example.taskmaster.activites;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
+
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.example.taskmaster.R;
 import com.example.taskmaster.adapter.TaskListRecylerViewAdapter;
-import com.example.taskmaster.database.TaskDatabase;
 import com.example.taskmaster.model.Task;
 
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String DATABASE_NAME = "task_db";
     public static final String PRODUCT_NAME_EXTRA_TAG = "productName";
     SharedPreferences sharedPreferences;
-    TaskDatabase taskDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,16 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        taskDatabase = Room.databaseBuilder(
-                        getApplicationContext(),
-                        TaskDatabase.class,
-                        DATABASE_NAME
-                )
-                .allowMainThreadQueries()
-                .fallbackToDestructiveMigration()
-                .build();
 
-        taskDatabase.taskDao().findAll();
+//        taskDatabase.taskDao().findAll();
 
         createAddTaskButton();
         createAllTaskButton();
@@ -57,10 +47,9 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         taskRecyclerView.setLayoutManager(layoutManager);
 
-        List<Task> tasks = taskDatabase.taskDao().findAll();
 
-        TaskListRecylerViewAdapter adapter = new TaskListRecylerViewAdapter(tasks);
-        taskRecyclerView.setAdapter(adapter);
+//        TaskListRecylerViewAdapter adapter = new TaskListRecylerViewAdapter();
+//        taskRecyclerView.setAdapter(adapter);
     }
 
     @Override
