@@ -6,19 +6,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.core.model.temporal.Temporal;
 import com.example.taskmaster.R;
-import com.example.taskmaster.model.Task;
+import com.amplifyframework.datastore.generated.model.*;
 
 import java.util.Date;
 
 public class AddTaskActivity extends AppCompatActivity {
-    public static final String DATABASE_NAME = "task_db";
+    public static final String Tag = "AddTaskActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +40,8 @@ public class AddTaskActivity extends AppCompatActivity {
         taskTypeSpinner.setAdapter(new ArrayAdapter<>(
                 this,
                 androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,
-                Task.TaskTypeEnum.values()
+
+                TaskTypeEnum.values()
         ));
 
     }
@@ -55,10 +60,23 @@ public class AddTaskActivity extends AppCompatActivity {
             String taskName = ((EditText) findViewById(R.id.addTaskTitleInputText)).getText().toString();
             String taskBody = ((EditText) findViewById(R.id.addTaskDescriptionInputText)).getText().toString();
             String taskState = ((EditText) findViewById(R.id.addTaskStatusInputText)).getText().toString();
-            java.util.Date newDate = new Date();
-            Task.TaskTypeEnum taskTypeEnum = Task.TaskTypeEnum.fromString(taskTypeSpinner.getSelectedItem().toString());
+            String currentDateString = com.amazonaws.util.DateUtils.formatISO8601Date(new Date());
+//            Task.TaskTypeEnum taskTypeEnum = Task.TaskTypeEnum.fromString(taskTypeSpinner.getSelectedItem().toString());
 
-            Task newTask = new Task(taskName, taskBody, taskState, taskTypeEnum, newDate);
+            Task newTask = Task.builder()
+                    .title(taskName)
+                    .body(taskBody)
+                    .state(taskState)
+                    .type((TaskTypeEnum) taskTypeSpinner.getSelectedItem())
+                    .dateCreated(new Temporal.DateTime(currentDateString))
+                    .build();
+
+            Amplify.API.mutate(
+                    ModelMutation.create(newTask),
+                    successResponse -> Log.i(Tag, "AddTaskActivity: made a Task Successfully"),
+                    failureResponse -> Log.i(Tag, "AddTaskActivity: failed with this response" + failureResponse)
+            );
+
 
 //            taskDatabase.taskDao().insertTask(newTask);
 

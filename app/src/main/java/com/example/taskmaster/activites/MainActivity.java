@@ -9,20 +9,25 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.Task;
 import com.example.taskmaster.R;
 import com.example.taskmaster.adapter.TaskListRecylerViewAdapter;
-import com.example.taskmaster.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String DATABASE_NAME = "task_db";
+    public static final String Tag = "TaskActivity";
     public static final String PRODUCT_NAME_EXTRA_TAG = "productName";
     SharedPreferences sharedPreferences;
+    List<Task> taskList = null;
+    TaskListRecylerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-
-//        taskDatabase.taskDao().findAll();
+        taskList = new ArrayList<>();
 
         createAddTaskButton();
         createAllTaskButton();
@@ -48,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         taskRecyclerView.setLayoutManager(layoutManager);
 
 
-//        TaskListRecylerViewAdapter adapter = new TaskListRecylerViewAdapter();
-//        taskRecyclerView.setAdapter(adapter);
+        adapter = new TaskListRecylerViewAdapter(taskList, this);
+        taskRecyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -58,6 +61,23 @@ public class MainActivity extends AppCompatActivity {
         String userName = sharedPreferences.getString(SettingsPageActivity.USER_NAME_TAG, "No username");
         TextView userNameEdited = findViewById(R.id.mainActivityUsernameTextView);
         userNameEdited.setText(userName + "'s Tasks");
+
+        Amplify.API.query(
+                ModelQuery.list(Task.class),
+                success -> {
+                    Log.i(Tag, "Read Task successfully");
+                    taskList.clear();
+                    for (Task dataBaseTask : success.getData()) {
+                        taskList.add(dataBaseTask);
+                    }
+                    runOnUiThread(() -> {
+                        adapter.notifyDataSetChanged();
+                    });
+                },
+                failureResponse -> Log.i(Tag, "Did not read Task successfully")
+
+        );
+
     }
 
 

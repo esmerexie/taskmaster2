@@ -1,5 +1,7 @@
 package com.example.taskmaster.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,16 +11,19 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskmaster.R;
-import com.example.taskmaster.model.Task;
+import com.amplifyframework.datastore.generated.model.Task;
+import com.example.taskmaster.activites.TaskDetailPageActivity;
 
 import java.util.List;
 
 public class TaskListRecylerViewAdapter extends RecyclerView.Adapter {
 
     List<Task> taskList;
+    Context callingActivity;
 
-    public TaskListRecylerViewAdapter(List<Task> tasks) {
-        this.taskList = tasks;
+    public TaskListRecylerViewAdapter(List<Task> taskList, Context callingActivity) {
+        this.taskList = taskList;
+        this.callingActivity = callingActivity;
     }
 
     @NonNull
@@ -42,6 +47,12 @@ public class TaskListRecylerViewAdapter extends RecyclerView.Adapter {
         tasksFragmentName.setText(position + ". " + taskName);
         tasksFragmentBody.setText(taskBody);
         tasksFragmentState.setText(taskState);
+
+        View taskViewHolder = holder.itemView;
+        taskViewHolder.setOnClickListener(view -> {
+            Intent goDetailPage = new Intent(callingActivity, TaskDetailPageActivity.class);
+            callingActivity.startActivity(goDetailPage);
+        });
     }
 
     @Override
