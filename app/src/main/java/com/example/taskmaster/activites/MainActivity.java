@@ -70,9 +70,9 @@ public class MainActivity extends AppCompatActivity {
                     for (Task dataBaseTask : success.getData()) {
                         taskList.add(dataBaseTask);
                     }
-//                    runOnUiThread(() -> {
-//                        adapter.notifyDataSetChanged();
-//                    });
+                    runOnUiThread(() -> {
+                        adapter.notifyDataSetChanged();
+                    });
                 },
                 failureResponse -> Log.i(Tag, "Did not read Task successfully")
 
