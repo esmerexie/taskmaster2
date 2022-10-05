@@ -12,10 +12,18 @@ type Task @model @auth(rules: [{allow: public}]){
 
     id: ID!
     title: String!
+    teamID: ID! @index(name: "byTeam")
     body: String!
     state: String!
     type: TaskTypeEnum
     dateCreated: AWSDateTime
+    team: Team @belongsTo(fields: ["teamID"])
+}
+
+type Team @model @auth(rules: [{allow: public}]){
+    id: ID!
+    name: String!
+    task: [Task] @hasMany(indexName: "byTeam", fields:["id"])
 }
 
 enum TaskTypeEnum {
