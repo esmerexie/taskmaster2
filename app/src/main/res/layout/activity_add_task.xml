@@ -77,11 +77,34 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="19dp"
         android:ems="10"
-        android:hint="Enter Task Status"
+        android:hint="@string/enter_task_status"
         android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:textColorHint="#757575"
         app:layout_constraintBottom_toTopOf="@+id/addTaskTitleSubmitBttn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addTaskDescriptionInputText" />
+        app:layout_constraintTop_toBottomOf="@+id/addTaskDescriptionInputText"
+        android:autofillHints="" />
+
+    <Spinner
+        android:id="@+id/addTeamSpinner"
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="1dp"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addTaskTeamTextView" />
+
+    <TextView
+        android:id="@+id/addTaskTeamTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="159dp"
+        android:text="@string/click_for_team"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/addTaskTypeSpinner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

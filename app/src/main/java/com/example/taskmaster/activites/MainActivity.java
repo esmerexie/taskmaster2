@@ -13,9 +13,12 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.AmplifyModelProvider;
 import com.amplifyframework.datastore.generated.model.Task;
+import com.amplifyframework.datastore.generated.model.Team;
 import com.example.taskmaster.R;
 import com.example.taskmaster.adapter.TaskListRecylerViewAdapter;
 
@@ -25,6 +28,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     public static final String Tag = "TaskActivity";
     public static final String PRODUCT_NAME_EXTRA_TAG = "productName";
+    public static final String TAG = "MainActivity";
     SharedPreferences sharedPreferences;
     List<Task> taskList = null;
     TaskListRecylerViewAdapter adapter;
@@ -42,6 +46,15 @@ public class MainActivity extends AppCompatActivity {
         createTaskOneButton();
         createSettingsButton();
         setUpTaskRecyclerView();
+
+        Team newTeam = Team.builder()
+                .name("Team Coders")
+                .build();
+        Amplify.API.mutate(
+                ModelMutation.create(newTeam),
+                success -> Log.i(TAG, "Worked"),
+                failure -> Log.i(TAG, "Did not work")
+        );
     }
 
     private void setUpTaskRecyclerView() {
