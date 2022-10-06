@@ -14,15 +14,23 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.api.graphql.model.ModelQuery;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.core.model.temporal.Temporal;
 import com.example.taskmaster.R;
 import com.amplifyframework.datastore.generated.model.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class AddTaskActivity extends AppCompatActivity {
     public static final String Tag = "AddTaskActivity";
+
+    Spinner teamSpinner = null;
+    CompletableFuture<List<Team>> teamFuture = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +41,32 @@ public class AddTaskActivity extends AppCompatActivity {
         setUpTypeSpinner();
         setUpSubmitBttn();
 
+    }
+
+    private void setUpTeamSpinner(){
+        Amplify.API.query(
+                ModelQuery.list(Team.class),
+                success -> {
+                    Log.i(Tag, "Read Team successfully");
+                    ArrayList<String> teamName = new ArrayList<>();
+                    ArrayList<Team> teams = new ArrayList<>();
+                    for(Team team : success.getData()){
+                        teams.add(team);
+                        teamName.add(team.getName());
+                    }
+                    teamFuture.complete(teams);
+                    runOnUiThread(() -> {
+                        teamSpinner.setAdapter(new ArrayAdapter<>(
+                                this,
+                                android.R.layout.simple_spinner_item,
+                                teamName));
+                    });
+                },
+                failure -> {
+                    teamFuture.complete(null);
+                    Log.i(Tag, "Did not read Teams successfully");
+                }
+        );
     }
 
     private void setUpTypeSpinner() {
@@ -47,6 +81,19 @@ public class AddTaskActivity extends AppCompatActivity {
     }
 
     private void setUpSubmitBttn() {
+        String selectedTeamString = teamSpinner.getSelectedItem().toString();
+        List<Team> teams = null;
+        try{
+            teams = teamFuture.get();
+        } catch (InterruptedException ie){
+            Log.e(Tag, "Interrupted Exception while getting teams");
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ee){
+            Log.e(Tag,  "ExecutionException while getting team");
+        }
+
+        Team selectedTeam = teams.stream().filter(t -> t.getName().equals(selectedTeamString)).findAny().orElseThrow(RuntimeException::new);
+
         Spinner taskTypeSpinner = findViewById(R.id.addTaskTypeSpinner);
         Button saveNewTaskBttn = findViewById(R.id.addTaskTitleSubmitBttn);
         saveNewTaskBttn.setOnClickListener(view -> {
@@ -68,6 +115,7 @@ public class AddTaskActivity extends AppCompatActivity {
                     .body(taskBody)
                     .state(taskState)
                     .type((TaskTypeEnum) taskTypeSpinner.getSelectedItem())
+                    .team(selectedTeam)
                     .dateCreated(new Temporal.DateTime(currentDateString))
                     .build();
 
