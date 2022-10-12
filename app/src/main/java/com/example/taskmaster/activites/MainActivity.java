@@ -47,23 +47,12 @@ public class MainActivity extends AppCompatActivity {
         createSettingsButton();
         setUpTaskRecyclerView();
 
-        Team newTeam = Team.builder()
-                .name("Team Coders")
-                .build();
-        Amplify.API.mutate(
-                ModelMutation.create(newTeam),
-                success -> Log.i(TAG, "Worked"),
-                failure -> Log.i(TAG, "Did not work")
-        );
     }
 
     private void setUpTaskRecyclerView() {
         RecyclerView taskRecyclerView = findViewById(R.id.mainActivityRecyclerView);
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         taskRecyclerView.setLayoutManager(layoutManager);
-
-
         adapter = new TaskListRecylerViewAdapter(taskList, this);
         taskRecyclerView.setAdapter(adapter);
     }

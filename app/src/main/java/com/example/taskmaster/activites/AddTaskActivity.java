@@ -32,7 +32,7 @@ public class AddTaskActivity extends AppCompatActivity {
     Team selectedTeam;
     List<String> teamName = null;
     ArrayAdapter<String> adapter;
-//    Spinner teamSpinner = null;
+    Spinner teamSpinner = null;
     CompletableFuture<List<Team>> teamFuture = null;
 
     @Override
@@ -75,7 +75,6 @@ public class AddTaskActivity extends AppCompatActivity {
     }
 
     private void setUpTeamSpinner(){
-
         Spinner teamNameSpinner = findViewById(R.id.addTeamSpinner);
         adapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, teamName);
         teamNameSpinner.setAdapter(adapter);
@@ -94,24 +93,23 @@ public class AddTaskActivity extends AppCompatActivity {
 
     private void setUpSubmitBttn() {
         Spinner teamSpinner = findViewById(R.id.addTeamSpinner);
-
-
-        String selectedTeamString = teamSpinner.getSelectedItem().toString();
-        List<Team> teams = null;
-        try{
-            teams = teamFuture.get();
-        } catch (InterruptedException ie){
-            ie.printStackTrace();
-            Thread.currentThread().interrupt();
-        } catch (ExecutionException ee){
-            ee.printStackTrace();
-        }
-
-        Team selectedTeam = teams.stream().filter(t -> t.getName().equals(selectedTeamString)).findAny().orElseThrow(RuntimeException::new);
-
         Spinner taskTypeSpinner = findViewById(R.id.addTaskTypeSpinner);
         Button saveNewTaskBttn = findViewById(R.id.addTaskTitleSubmitBttn);
+
         saveNewTaskBttn.setOnClickListener(view -> {
+
+            String selectedTeamString = teamSpinner.getSelectedItem().toString();
+            List<Team> teams = null;
+            try{
+                teams = teamFuture.get();
+            } catch (InterruptedException ie){
+                ie.printStackTrace();
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException ee){
+                ee.printStackTrace();
+            }
+
+            selectedTeam = teams.stream().filter(t -> t.getName().equals(selectedTeamString)).findAny().orElseThrow(RuntimeException::new);
 
             Context submitted = getApplicationContext();
             CharSequence text = "Task Submitted!";
